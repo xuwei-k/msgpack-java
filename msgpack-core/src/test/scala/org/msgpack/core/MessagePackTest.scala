@@ -17,12 +17,12 @@ package org.msgpack.core
 
 import org.msgpack.value.Value
 import org.msgpack.value.holder.ValueHolder
-
+import org.msgpack.value.impl.{ArrayValueImpl, RawStringValueImpl}
 import scala.util.Random
 import MessagePack.Code
 import java.io.ByteArrayOutputStream
 import java.math.BigInteger
-import java.nio.CharBuffer
+import java.nio.{ByteBuffer, CharBuffer}
 import java.nio.charset.{UnmappableCharacterException, CodingErrorAction}
 
 /**
@@ -460,6 +460,21 @@ class MessagePackTest extends MessagePackSpec  {
           }).toMap
         }.toList
       })
+    }
+
+    "fix NullPointerException bug" in {
+      val config = new MessagePack.ConfigBuilder().packerBufferSize(32).build
+      val msgpack = new MessagePack(config)
+      val stringSize = 31
+      val str = ("a" * stringSize).getBytes("UTF-8")
+      val rawString = new RawStringValueImpl(ByteBuffer.wrap(str))
+      val array = new ArrayValueImpl(Array(rawString))
+      val out = new ByteArrayOutputStream()
+      val packer = msgpack.newPacker(out)
+      packer.packValue(array)
+      packer.close()
+      val expect = (Code.FIXARRAY_PREFIX | 0x1) +: (Code.FIXSTR_PREFIX | stringSize) +: str
+      out.toByteArray shouldBe expect
     }
 
   }
