@@ -121,12 +121,23 @@ final class PackUnpackValueTest extends MessagePackSpec {
     val unpacker = MessagePack.newDefaultUnpacker(bytes)
     val holder = new ValueHolder
     unpacker.unpackValue(holder)
-    holder.get() shouldBe a
+    val x = holder.get
+    try{
+      x shouldBe a
+    }catch{
+      case e: Throwable =>
+        println(e)
+        println(x, x.getClass)
+        println(a, a.getClass)
+        throw e
+    }
   }
 
   "pack/unpack Value" should {
     "value" in {
-      forAll(valueGen1)(roundtrip)
+//      forAll(valueGen1)(roundtrip)
+      val a = ValueFactory.newRawString("a".getBytes("UTF-8"))
+      roundtrip(a)
     }
   }
 }

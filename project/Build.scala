@@ -133,6 +133,8 @@ object Build extends Build {
       description := "Core library of the MessagePack for Java",
       libraryDependencies ++= testLib
     )
+  ).dependsOn(
+    ProjectRef(uri("git://github.com/rickynils/scalacheck.git#235be999587"), "jvm")
   )
 
   lazy val msgpackJackson = Project(
@@ -150,7 +152,6 @@ object Build extends Build {
 
     val testLib = Seq(
       "org.scalatest" % "scalatest_2.11" % "2.2.0" % "test",
-      "org.scalacheck" % "scalacheck_2.11" % "1.11.4" % "test",
       "org.xerial" % "xerial-core" % "3.3.0" % "test",
       "org.msgpack" % "msgpack" % "0.6.9" % "test",
       "com.novocode" % "junit-interface" % "0.10" % "test",
