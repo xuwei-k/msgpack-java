@@ -16,12 +16,10 @@
 package org.msgpack.core
 
 import java.io.ByteArrayOutputStream
-
-import org.msgpack.core.buffer.{OutputStreamBufferOutput, ArrayBufferInput}
+import org.msgpack.core.buffer.OutputStreamBufferOutput
+import org.msgpack.value.{Value, ValueFactory}
 import xerial.core.io.IOUtil
-
 import scala.util.Random
-import org.msgpack.value.ValueFactory
 
 /**
  *
@@ -128,6 +126,32 @@ class MessagePackerTest extends MessagePackSpec {
       )
       testCases.foreach{
         case (bufferSize, stringSize) => test(bufferSize, stringSize)
+      }
+    }
+
+    "Strange behavior of RawStringValueImpl" in {
+      val str = "aaa"
+      def newRawStr() = ValueFactory.newRawString(str.getBytes("UTF-8"))
+
+      def pack(v: Value): Array[Byte] = {
+        val out = new ByteArrayOutputStream()
+        val packer = MessagePack.newDefaultPacker(out)
+        packer.packValue(v)
+        packer.close()
+        out.toByteArray
+      }
+
+      {
+        val rawStr = newRawStr()
+        println(rawStr)
+        pack(rawStr)
+        rawStr.toString() shouldBe str
+      }
+
+      {
+        val rawStr = newRawStr()
+        pack(rawStr)
+        rawStr.asString().toString shouldBe str // rawStr is empty !?
       }
     }
   }
