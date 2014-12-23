@@ -39,11 +39,13 @@ class RawValueImplTest extends MessagePackSpec {
       def printRawValueImplInternal(v: Value): Unit = {
         val field = classOf[RawValueImpl].getDeclaredField("byteBuffer")
         field.setAccessible(true)
-        println(field.get(v).asInstanceOf[java.nio.ByteBuffer])
+        println(field.get(v))
       }
 
       val str = ValueFactory.newRawString("aaa".getBytes("UTF-8"))
+      printRawValueImplInternal(str)
       val bytes = createMessagePackData(_.packValue(str))
+      printRawValueImplInternal(str)
       val unpacker = MessagePack.newDefaultUnpacker(bytes)
       val holder = new ValueHolder
       unpacker.unpackValue(holder)
