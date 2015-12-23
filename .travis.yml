@@ -18,5 +18,6 @@ branches:
     - /^v07.*$/
 
 script:
+  - ./sbt "msgpack-benchmark/jmh:run"
   - ./sbt test
   - ./sbt test -J-Dmsgpack.universal-buffer=true

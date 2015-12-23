@@ -11,4 +11,6 @@ addSbtPlugin("de.johoop" % "jacoco4sbt" % "2.1.6")
 
 addSbtPlugin("org.xerial.sbt" % "sbt-jcheckstyle" % "0.1.2")
 
+addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.4")
+
 scalacOptions ++= Seq("-deprecation", "-feature")

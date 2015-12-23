@@ -73,7 +73,7 @@ lazy val root = Project(id = "msgpack-java", base = file("."))
           findbugs := {
             // do not run findbugs for the root project
           }
-        ).aggregate(msgpackCore, msgpackJackson)
+        ).aggregate(msgpackCore, msgpackJackson, msgpackBenchmark)
 
 lazy val msgpackCore = Project(id = "msgpack-core", base = file("msgpack-core"))
         .settings(
@@ -103,3 +103,13 @@ lazy val msgpackJackson = Project(id = "msgpack-jackson", base = file("msgpack-j
           ),
           testOptions += Tests.Argument(TestFrameworks.JUnit, "-v")
         ).dependsOn(msgpackCore)
+
+lazy val msgpackBenchmark = Project(id = "msgpack-benchmark", base = file("msgpack-benchmark"))
+        .settings(
+          buildSettings,
+          publishArtifact := false,
+          publish := {},
+          publishLocal := {}
+        ).dependsOn(
+          msgpackJackson
+        ).enablePlugins(JmhPlugin)
