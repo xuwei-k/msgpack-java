@@ -50,14 +50,7 @@ val buildSettings = findbugsSettings ++ jacoco.settings ++ osgiSettings ++ Seq[S
   
   // Find bugs
   findbugsReportType := Some(ReportType.FancyHtml),
-  findbugsReportPath := Some(crossTarget.value / "findbugs" / "report.html"),
-  
-  // Style check config: (sbt-jchekcstyle)
-  jcheckStyleConfig := "facebook",
-  
-  // Run jcheckstyle both for main and test codes
-  (compile in Compile) := ((compile in Compile) dependsOn (jcheckStyle in Compile)).value,
-  (compile in Test) := ((compile in Test) dependsOn (jcheckStyle in Test)).value
+  findbugsReportPath := Some(crossTarget.value / "findbugs" / "report.html")
 )
 
 val junitInterface = "com.novocode" % "junit-interface" % "0.11" % "test"
