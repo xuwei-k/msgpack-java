@@ -1,7 +1,13 @@
-import de.johoop.findbugs4sbt.ReportType
 import ReleaseTransformations._
+import com.github.sbt.findbugs.settings.FindbugsReport
 
-val buildSettings = findbugsSettings ++ jacoco.settings ++ osgiSettings ++ Seq[Setting[_]](
+val buildSettings = Seq[Setting[_]](
+  publishTo := Some(
+    if (isSnapshot.value)
+      Opts.resolver.sonatypeSnapshots
+    else
+      Opts.resolver.sonatypeStaging
+  ),
   organization := "org.msgpack",
   organizationName := "MessagePack",
   organizationHomepage := Some(new URL("http://msgpack.org/")),
@@ -38,18 +44,15 @@ val buildSettings = findbugsSettings ++ jacoco.settings ++ osgiSettings ++ Seq[S
           setReleaseVersion,
           commitReleaseVersion,
           tagRelease,
-          ReleaseStep(action = Command.process("publishSigned", _)),
+          releaseStepCommand("publishSigned"),
           setNextVersion,
           commitNextVersion,
-          ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+          releaseStepCommand("sonatypeReleaseAll"),
           pushChanges
         ),
   
-  // Jacoco code coverage report
-  parallelExecution in jacoco.Config := false,
-  
   // Find bugs
-  findbugsReportType := Some(ReportType.FancyHtml),
+  findbugsReportType := Some(FindbugsReport.FancyHtml),
   findbugsReportPath := Some(crossTarget.value / "findbugs" / "report.html"),
   
   // Style check config: (sbt-jchekcstyle)
@@ -64,6 +67,7 @@ val junitInterface = "com.novocode" % "junit-interface" % "0.11" % "test"
 
 // Project settings
 lazy val root = Project(id = "msgpack-java", base = file("."))
+        .enablePlugins(SbtOsgi)
         .settings(
           buildSettings,
           // Do not publish the root project
@@ -76,6 +80,7 @@ lazy val root = Project(id = "msgpack-java", base = file("."))
         ).aggregate(msgpackCore, msgpackJackson)
 
 lazy val msgpackCore = Project(id = "msgpack-core", base = file("msgpack-core"))
+        .enablePlugins(SbtOsgi)
         .settings(
           buildSettings,
           description := "Core library of the MessagePack for Java",
@@ -101,6 +106,7 @@ lazy val msgpackCore = Project(id = "msgpack-core", base = file("msgpack-core"))
         )
 
 lazy val msgpackJackson = Project(id = "msgpack-jackson", base = file("msgpack-jackson"))
+        .enablePlugins(SbtOsgi)
         .settings(
           buildSettings,
           name := "jackson-dataformat-msgpack",
