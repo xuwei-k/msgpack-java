@@ -1,6 +1,8 @@
 import ReleaseTransformations._
 import com.github.sbt.findbugs.settings.FindbugsReport
 
+val akkaVersion = SettingKey[String]("akkaVersion")
+
 val buildSettings = Seq[Setting[_]](
   publishTo := Some(
     if (isSnapshot.value)
@@ -93,6 +95,12 @@ lazy val msgpackCore = Project(id = "msgpack-core", base = file("msgpack-core"))
             "org.msgpack.value",
             "org.msgpack.value.impl"
           ),
+          akkaVersion := {
+            CrossVersion.partialVersion(scalaVersion.value) match {
+              case Some((2, 11)) => "2.3.16" // latest version of support java 7
+              case _ => "2.4.20"
+            }
+          },
           libraryDependencies ++= Seq(
             // msgpack-core should have no external dependencies
             junitInterface,
@@ -101,7 +109,7 @@ lazy val msgpackCore = Project(id = "msgpack-core", base = file("msgpack-core"))
             "org.xerial" %% "xerial-core" % "3.6.0" % "test",
             "org.msgpack" % "msgpack" % "0.6.12" % "test",
             "commons-codec" % "commons-codec" % "1.10" % "test",
-            "com.typesafe.akka" %% "akka-actor" % "2.3.16" % "test"
+            "com.typesafe.akka" %% "akka-actor" % akkaVersion.value % "test"
           )
         )
 
