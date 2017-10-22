@@ -13,10 +13,6 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
-branches:
-  only:
-    - develop
-
 script:
   - ./sbt jcheckStyle
   - ./sbt test
