@@ -9,10 +9,6 @@ cache:
 
 sudo: false
 
-branches:
-  only:
-    - develop
-
 matrix:
   include:
   - env: PROJECT=checkstyle
