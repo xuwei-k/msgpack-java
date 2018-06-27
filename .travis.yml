@@ -9,10 +9,6 @@ cache:
 
 sudo: false
 
-branches:
-  only:
-    - develop
-
 matrix:
   include:
   - env: PROJECT=checkstyle
@@ -24,12 +20,8 @@ matrix:
     script:
     - ./sbt test
     - ./sbt test -J-Dmsgpack.universal-buffer=true
-  - env: PROJECT=java9
-    jdk: oraclejdk9
-    addons:
-      apt:
-        packages:
-        - oracle-java9-installer
+  - env: PROJECT=java11
+    jdk: oraclejdk11
     script:
     - ./sbt test
     - ./sbt test -J-Dmsgpack.universal-buffer=true
