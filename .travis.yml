@@ -24,6 +24,11 @@ matrix:
     script:
     - ./sbt test
     - ./sbt test -J-Dmsgpack.universal-buffer=true
+  - env: PROJECT=java7
+    jdk: oraclejdk8
+    script:
+    - ./sbt "java++ 7!" test
+    - ./sbt "java++ 7!" test -J-Dmsgpack.universal-buffer=true
   - env: PROJECT=java9
     jdk: oraclejdk9
     addons:
